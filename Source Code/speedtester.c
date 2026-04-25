@@ -20,6 +20,9 @@ HANDLE console;
 // SetConsoleTextAttribute(console,14)  ;  YELLOW
 // SetConsoleTextAttribute(console, 12) ;  RED
 // SetConsoleTextAttribute(console, 10) ;  GREEN
+// SetConsoleTextAttribute(console, 9)  ;  bright blue
+
+//------------------------------------------------
 
 char Sample_para[MAX_LENGTH];
 char user_para[MAX_INPUT];
@@ -172,7 +175,7 @@ void grade(float wpm, double accuracy)
 
     else if (wpm >= 20 && accuracy >= 60)
     {
-        SetConsoleTextAttribute(console, 7);
+        SetConsoleTextAttribute(console, 9);
         printf("Grade : C - Keep practicing!");
         SetConsoleTextAttribute(console, 7);
     }
@@ -232,13 +235,62 @@ int main()
 
         start();
 
+        char liveinput;
+        int liveposition = 0;
+
         time_t start, end;
 
         time(&start); // timer starts
 
-        user_input(user_para, MAX_LENGTH);
+        while (1)
+        {
+            liveinput = _getch();
+
+            if (liveinput == 13)
+            {
+                break;
+            }
+
+            else if (liveinput == 8)
+            {
+                if (liveposition > 0)
+                {
+                    liveposition--;
+                    user_para[liveposition] = '\0';
+                    printf("\b \b");
+                }
+            }
+            else
+            {
+                user_para[liveposition] = liveinput;
+
+                if (liveinput == Sample_para[liveposition])
+                {
+                    
+                    SetConsoleTextAttribute(console, 10);
+                    printf("%c", liveinput);
+                    SetConsoleTextAttribute(console, 7);
+                    correct ++ ;
+
+                }
+                else
+                {
+
+                    SetConsoleTextAttribute(console, 12);
+                    printf("%c", liveinput);
+                    SetConsoleTextAttribute(console, 7);
+                    mistakes ++ ;
+                }
+
+                liveposition++;
+            }
+        }
 
         time(&end); // timer stops
+
+        user_para[liveposition] = '\0';
+
+        printf("\n");
 
         double seconds = difftime(end, start);
 
@@ -257,60 +309,6 @@ int main()
         {
             limit = user_length;
         }
-
-        // limit = (sample_length < user_length) ? sample_length : user_length   (Just learnt this)
-
-        //---------------------------------------------
-
-        printf("\n");
-
-        printf("\n----------   ERROR HIGHLIGHT   ----------\n");
-
-        printf("\n");
-
-        for (int i = 0; i < limit; i++)
-        {
-            if (Sample_para[i] == user_para[i]) // helps to check accuracy
-            {
-                correct++;
-                SetConsoleTextAttribute(console, 10); // changes console colour to green (FOR CORRECT TEXT)
-                printf("%c", Sample_para[i]);
-                SetConsoleTextAttribute(console, 7); // changes colour back to white
-            }
-
-            else
-            {
-                mistakes++;
-                SetConsoleTextAttribute(console, 12); // changes console colour to red (FOR MISTAKES)
-                printf("%c", Sample_para[i]);
-                SetConsoleTextAttribute(console, 7); // changes colour back to white
-            }
-        }
-        // ---------------- SHOWS WHATEVER USER DIDN'T TYPE -----------
-        if (user_length < sample_length)
-        {
-            for (int i = user_length; i < sample_length; i++)
-            {
-                SetConsoleTextAttribute(console, 12); // red color
-                printf("%c", Sample_para[i]);
-                SetConsoleTextAttribute(console, 7); // white color
-            }
-        }
-        // --------------------------------------------------------------
-
-        // ----------------- SHOWS WHAT EXTRA TYPED ---------------------
-
-        if (user_length > sample_length)
-        {
-            for (int i = sample_length; i < user_length; i++)
-            {
-                SetConsoleTextAttribute(console, 14); // yellow color
-                printf("%c", user_para[i]);
-                SetConsoleTextAttribute(console, 7);
-            }
-        }
-
-        //----------------------------------------------------------------
 
         accuracy = ((double)correct / sample_length) * 100;
 
