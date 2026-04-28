@@ -246,12 +246,12 @@ int main()
         {
             liveinput = _getch();
 
-            if (liveinput == 13)
+            if (liveinput == 13) // if enter pressed loop breaks
             {
                 break;
             }
 
-            else if (liveinput == 8)
+            else if (liveinput == 8) // if backspace pressed then if loop do will its work
             {
                 if (liveposition > 0)
                 {
@@ -262,16 +262,15 @@ int main()
             }
             else
             {
-                user_para[liveposition] = liveinput;
+                user_para[liveposition] = liveinput; // sstore the current word in liveinput
 
                 if (liveinput == Sample_para[liveposition])
                 {
-                    
+
                     SetConsoleTextAttribute(console, 10);
                     printf("%c", liveinput);
                     SetConsoleTextAttribute(console, 7);
-                    correct ++ ;
-
+                    correct++;
                 }
                 else
                 {
@@ -279,10 +278,15 @@ int main()
                     SetConsoleTextAttribute(console, 12);
                     printf("%c", liveinput);
                     SetConsoleTextAttribute(console, 7);
-                    mistakes ++ ;
+                    mistakes++;
                 }
 
                 liveposition++;
+
+                if (liveposition == sample_length) // loop will break when user tries to type extra than the paragraph
+                {
+                    break;
+                }
             }
         }
 
